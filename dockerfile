@@ -1,4 +1,4 @@
-FROM python:3.12-alpine
+FROM python:3.12-slim
 
 COPY . /app
 
@@ -8,4 +8,8 @@ RUN pip install -r requirements.txt
 
 EXPOSE 8000
 
-CMD ["fastapi", "run", "main.py"]
+# CMD uvicorn main:app --port 8000 --host=0.0.0.0
+
+CMD fastapi run main.py --host=0.0.0.0
+
+# CMD ["fastapi", "run", "main.py"]
