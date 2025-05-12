@@ -1,6 +1,7 @@
 from typing import Union
 from fastapi import FastAPI
 from pydantic import BaseModel
+import time
 
 app = FastAPI()
 
@@ -9,6 +10,7 @@ class GenerateLinkDto(BaseModel):
 
 @app.get("/")
 def read():
+    time.sleep(20)
     return { 'message': 'hello world' }
 
 @app.post("/generate-link")
