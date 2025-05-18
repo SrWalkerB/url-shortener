@@ -3,7 +3,7 @@ import os
 import uvicorn
 
 from fastapi.templating import Jinja2Templates
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from url_reference.generate_link_dto import GenerateLinkDto 
 from url_reference.url_reference_service import UrlReferenceService
 from database.database_init import Database
@@ -22,9 +22,16 @@ def on_startup():
     database = Database()
 
 
-@app.get('/redirect_link_by_code/{code}')
+@app.get('/{code}')
 def redirect_link_by_code(code: str, req: Request):
-    return templates.TemplateResponse(request=req, name='redirect.html', context={"url_to_redirect": 'https://www.google.com/'})
+    urlReferenceService = UrlReferenceService()
+
+    url_target = urlReferenceService.get_by_code(code)
+
+    if url_target is None:
+        return HTTPException(status_code=404, detail='code not found')
+
+    return templates.TemplateResponse(request=req, name='redirect.html', context={"url_to_redirect": url_target})
 
 @app.post("/generate-link")
 def generate_link(props: GenerateLinkDto, req: Request):
